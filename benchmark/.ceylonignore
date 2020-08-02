@@ -1,4 +1,5 @@
 .idea
+build
 venv
 __pycache__
 just_check_ignore.text

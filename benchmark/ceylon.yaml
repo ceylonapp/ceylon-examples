@@ -9,3 +9,7 @@ stack:
       source: analyser.py
       name: AnalyserAgent
       version: 1.0.0
+envars:
+  - "REDIS_HOST=192.168.8.100"
+  - "REDIS_PORT=6379"
+  - "REDIS_DB=0"
