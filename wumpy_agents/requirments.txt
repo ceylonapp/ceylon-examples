@@ -1,0 +1,4 @@
+python-chess
+matplotlib
+svgutils
+svglib

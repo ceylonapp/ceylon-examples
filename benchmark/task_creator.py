@@ -1,8 +1,4 @@
-import sys
-import time
 
-payload = ''.join([f"1" for r in range(int(0.01 * 1024))])
-print(sys.getsizeof(payload) / 1024)
 
 class TaskCreatorAgent:
     def __init__(self, config=None):

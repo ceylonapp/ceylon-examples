@@ -1,0 +1,17 @@
+name: ceylon_chess_player
+stack:
+  agents:
+    chess_board:
+      source: chess_board.py
+      name: ChessBoardAgent
+      version: 1.0.0
+    user_input_agent:
+      source: player_coordinator.py
+      name: PlayerCoordinatorAgent
+      expose: "4545"
+      path: /chees
+      type: ws
+envars:
+  - "REDIS_HOST=192.168.8.100"
+  - "REDIS_PORT=6379"
+  - "REDIS_DB=0"

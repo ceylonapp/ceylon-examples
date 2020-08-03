@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="">
+<head>
+    <meta charset="utf-8">
+    <title></title>
+</head>
+<body>
+<header></header>
+<main>
+    <div style="margin: 16px;">
+        <form id="cheesCtrlForm" method="post" action="http://127.0.0.1:8080/chees">
+            <label>
+                Move
+                <input type="text" id="move">
+            </label>
+            <button type="submit">Move</button>
+        </form>
+    </div>
+    <div id="chessboard">
+    </div>
+    <div id="result"></div>
+</main>
+<footer></footer>
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+
+    $(document).ready(function () {
+        $("#cheesCtrlForm").submit(function (e) {
+
+            e.preventDefault(); // avoid to execute the actual submit of the form.
+
+            var form = $(this);
+            var url = form.attr('action');
+            var move = $("#move").val();
+            console.log(move);
+            $.post(url, JSON.stringify({move: move}))
+                .done(function (data) {
+                    console.log(data);
+                    $('#chessboard').html(data.board);
+                    $("#result").html(data.result);
+                });
+
+
+        });
+    });
+
+</script>
+</html>
