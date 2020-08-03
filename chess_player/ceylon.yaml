@@ -6,7 +6,7 @@ stack:
       name: ChessBoardAgent
       version: 1.0.0
     user_input_agent:
-      source: player_coordinator.py
+      source: piece_player.py
       name: PlayerCoordinatorAgent
       expose: "4545"
       path: /chees

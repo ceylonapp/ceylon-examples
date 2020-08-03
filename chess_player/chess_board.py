@@ -1,7 +1,7 @@
 import chess
 import chess.svg
 
-from player_coordinator import PlayerCoordinatorAgent
+from piece_player import PlayerCoordinatorAgent
 
 
 class ChessBoardAgent:
