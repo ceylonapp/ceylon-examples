@@ -6,6 +6,7 @@ from mashumaro import DataClassJSONMixin
 
 @dataclass
 class GameState(DataClassJSONMixin):
+    id: int
     reward: int
     player: str
     legal_moves: List[str]
