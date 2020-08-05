@@ -35,6 +35,7 @@ class AnalyserAgent:
         self.avg_data_size = -1
 
     async def accept_message(self, agent, message):
+        # print(agent,message)
         self.data_count += 1
         sender_time = int(message["data"]["gen_time"])
         current_time = time.time_ns()
@@ -46,7 +47,7 @@ class AnalyserAgent:
             msg_size = get_size(message["data"]) / 1024
             self.avg_data_size = (self.avg_data_size + msg_size) / (2 if self.avg_data_size > 0 else 1)
 
-        if self.data_count >= 10000:
+        if self.data_count >= 100:
             print(f"{self.data_count} {self.avg_data_size:0.2f} kb ", f"{self.avg_speed:0.2f} Hz")
             self.avg_speed = -1
             self.avg_data_size = -1

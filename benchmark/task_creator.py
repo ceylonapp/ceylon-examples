@@ -1,3 +1,9 @@
+import asyncio
+import sys
+import time
+
+payload = ''.join([f"1" for r in range(int(0.01 * 1024))])
+print(sys.getsizeof(payload) / 1024)
 
 
 class TaskCreatorAgent:
@@ -13,3 +19,4 @@ class TaskCreatorAgent:
                 "payload": payload,
                 "gen_time": time.time_ns()
             })
+            # await asyncio.sleep(0.01)
