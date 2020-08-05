@@ -11,6 +11,8 @@ stack:
       expose: "4545"
       path: /chees
       type: ws
+      init_params:
+        type: white
 envars:
   - "REDIS_HOST=192.168.8.100"
   - "REDIS_PORT=6379"

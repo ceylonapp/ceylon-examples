@@ -1,0 +1,374 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>chessboardjs Example #1000 - Empty Board</title>
+    <base href="../" />
+    <link rel="stylesheet" href="./static/css/chessboard-1.0.0.min.css">
+    <style type="text/css">
+        .highlight-white {
+            box-shadow: inset 0 0 3px 3px yellow;
+        }
+
+        .highlight-black {
+            box-shadow: inset 0 0 3px 3px blue;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!--- Begin Example HTML ------------------------------------------------------>
+    <div id="myBoard" style="width: 400px"></div>
+    <div id="log" style="color:green;background-color: black;">
+        <ul>
+
+        </ul>
+    </div>
+    <!--- End Example HTML -------------------------------------------------------->
+
+    <script src="./static/js/jquery.min.js"></script>
+    <script src="./static/js/chess.js"></script>
+    <script src="./static/js/chessboard-1.0.0.min.js"></script>
+    <script>
+        var config = {
+            position: 'start',
+            onMoveEnd: onMoveEnd
+        }
+        board = Chessboard('myBoard', config)
+        var $board = $('#myBoard')
+        var game = new Chess()
+        var squareClass = 'square-55d63'
+        var squareToHighlight = null
+        var colorToHighlight = null
+
+        function makeMove(movestr) {
+            var possibleMoves = game.moves({
+                verbose: true
+            })
+
+            // exit if the game is over
+            if (game.game_over()) return
+            // var randomIdx = Math.floor(Math.random() * possibleMoves.length)
+            // var move = possibleMoves[randomIdx]
+            for (const e in possibleMoves) {
+                if (possibleMoves.hasOwnProperty(e)) {
+                    const element = possibleMoves[e];
+
+                    var mStr = "" + element.from + "" + element.to;
+                    if (mStr === movestr) {
+                        move = element;
+                        break;
+                    }
+                }
+            }
+
+            if (move.color === 'w') {
+                $board.find('.' + squareClass).removeClass('highlight-white')
+                $board.find('.square-' + move.from).addClass('highlight-white')
+                squareToHighlight = move.to
+                colorToHighlight = 'white'
+            } else {
+                $board.find('.' + squareClass).removeClass('highlight-black')
+                $board.find('.square-' + move.from).addClass('highlight-black')
+                squareToHighlight = move.to
+                colorToHighlight = 'black'
+            }
+
+            game.move(move)
+            board.position(game.fen())
+
+        }
+
+        function onMoveEnd() {
+            $board.find('.square-' + squareToHighlight)
+                .addClass('highlight-' + colorToHighlight)
+        }
+
+
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+
+
+        var boardMoveLogs = [];
+        var isPlaying = false;
+
+
+        async function createBoardPlay() {
+            isPlaying = true;
+            var log = $("#log ul");
+            log.empty();
+            for (let index = 0; index < boardMoveLogs.length; index++) {
+                const element = boardMoveLogs[index];
+                log.append('<li onclick="changeBoardPosition(' + index + ')">' + element[1] + '</li>');
+                makeMove(element[1]);
+                await sleep(500);
+            }
+            isPlaying = false;
+        }
+
+        function changeBoardPosition(index) {
+            if (!isPlaying) {
+                console.log(index);
+                var element = boardMoveLogs[index];
+                var elementPre = boardMoveLogs[index - 1];
+                game = Chess(elementPre[2]);
+                makeMove(elementPre[1]);
+            }
+        }
+
+
+    </script>
+
+    <script>
+        function convert(id, move, board) {
+            return [id, move, board];
+        }
+        boardMoveLogs = [
+            convert(1, 'd2d3', 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'),
+            convert(2, 'a7a6', 'rnbqkbnr/pppppppp/8/8/8/3P4/PPP1PPPP/RNBQKBNR b KQkq - 0 1'),
+            convert(3, 'd3d4', 'rnbqkbnr/1ppppppp/p7/8/8/3P4/PPP1PPPP/RNBQKBNR w KQkq - 0 2'),
+            convert(4, 'a8a7', 'rnbqkbnr/1ppppppp/p7/8/3P4/8/PPP1PPPP/RNBQKBNR b KQkq - 0 2'),
+            convert(5, 'f2f3', '1nbqkbnr/rppppppp/p7/8/3P4/8/PPP1PPPP/RNBQKBNR w KQk - 1 3'),
+            convert(6, 'a6a5', '1nbqkbnr/rppppppp/p7/8/3P4/5P2/PPP1P1PP/RNBQKBNR b KQk - 0 3'),
+            convert(7, 'e2e4', '1nbqkbnr/rppppppp/8/p7/3P4/5P2/PPP1P1PP/RNBQKBNR w KQk - 0 4'),
+            convert(8, 'd7d5', '1nbqkbnr/rppppppp/8/p7/3PP3/5P2/PPP3PP/RNBQKBNR b KQk - 0 4'),
+            convert(9, 'b2b4', '1nbqkbnr/rpp1pppp/8/p2p4/3PP3/5P2/PPP3PP/RNBQKBNR w KQk - 0 5'),
+            convert(10,
+                'a5a4',
+                '1nbqkbnr/rpp1pppp/8/p2p4/1P1PP3/5P2/P1P3PP/RNBQKBNR b KQk - 0 5'),
+            convert(11,
+                'g1h3',
+                '1nbqkbnr/rpp1pppp/8/3p4/pP1PP3/5P2/P1P3PP/RNBQKBNR w KQk - 0 6'),
+            convert(12,
+                'b8c6',
+                '1nbqkbnr/rpp1pppp/8/3p4/pP1PP3/5P1N/P1P3PP/RNBQKB1R b KQk - 1 6'),
+            convert(13,
+                'b1d2',
+                '2bqkbnr/rpp1pppp/2n5/3p4/pP1PP3/5P1N/P1P3PP/RNBQKB1R w KQk - 2 7'),
+            convert(14,
+                'c8g4',
+                '2bqkbnr/rpp1pppp/2n5/3p4/pP1PP3/5P1N/P1PN2PP/R1BQKB1R b KQk - 3 7'),
+            convert(15,
+                'a2a3',
+                '3qkbnr/rpp1pppp/2n5/3p4/pP1PP1b1/5P1N/P1PN2PP/R1BQKB1R w KQk - 4 8'),
+            convert(16,
+                'f7f5',
+                '3qkbnr/rpp1pppp/2n5/3p4/pP1PP1b1/P4P1N/2PN2PP/R1BQKB1R b KQk - 0 8'),
+            convert(17,
+                'a1a2',
+                '3qkbnr/rpp1p1pp/2n5/3p1p2/pP1PP1b1/P4P1N/2PN2PP/R1BQKB1R w KQk - 0 9'),
+            convert(18,
+                'b7b6',
+                '3qkbnr/rpp1p1pp/2n5/3p1p2/pP1PP1b1/P4P1N/R1PN2PP/2BQKB1R b Kk - 1 9'),
+            convert(19,
+                'h3f4',
+                '3qkbnr/r1p1p1pp/1pn5/3p1p2/pP1PP1b1/P4P1N/R1PN2PP/2BQKB1R w Kk - 0 10'),
+            convert(20,
+                'c6a5',
+                '3qkbnr/r1p1p1pp/1pn5/3p1p2/pP1PPNb1/P4P2/R1PN2PP/2BQKB1R b Kk - 1 10'),
+            convert(21,
+                'g2g3',
+                '3qkbnr/r1p1p1pp/1p6/n2p1p2/pP1PPNb1/P4P2/R1PN2PP/2BQKB1R w Kk - 2 11'),
+            convert(22,
+                'c7c5',
+                '3qkbnr/r1p1p1pp/1p6/n2p1p2/pP1PPNb1/P4PP1/R1PN3P/2BQKB1R b Kk - 0 11'),
+            convert(23,
+                'f1d3',
+                '3qkbnr/r3p1pp/1p6/n1pp1p2/pP1PPNb1/P4PP1/R1PN3P/2BQKB1R w Kk - 0 12'),
+            convert(24,
+                'a5c6',
+                '3qkbnr/r3p1pp/1p6/n1pp1p2/pP1PPNb1/P2B1PP1/R1PN3P/2BQK2R b Kk - 1 12'),
+            convert(25,
+                'b4b5',
+                '3qkbnr/r3p1pp/1pn5/2pp1p2/pP1PPNb1/P2B1PP1/R1PN3P/2BQK2R w Kk - 2 13'),
+            convert(26,
+                'a7a8',
+                '3qkbnr/r3p1pp/1pn5/1Ppp1p2/p2PPNb1/P2B1PP1/R1PN3P/2BQK2R b Kk - 0 13'),
+            convert(27,
+                'h1f1',
+                'r2qkbnr/4p1pp/1pn5/1Ppp1p2/p2PPNb1/P2B1PP1/R1PN3P/2BQK2R w Kk - 1 14'),
+            convert(28,
+                'c6d4',
+                'r2qkbnr/4p1pp/1pn5/1Ppp1p2/p2PPNb1/P2B1PP1/R1PN3P/2BQKR2 b k - 2 14'),
+            convert(29,
+                'f1h1',
+                'r2qkbnr/4p1pp/1p6/1Ppp1p2/p2nPNb1/P2B1PP1/R1PN3P/2BQKR2 w k - 0 15'),
+            convert(30,
+                '',
+                'r2qkbnr/4p1pp/1p6/1Ppp1p2/p2nPNb1/P2B1PP1/R1PN3P/2BQK2R b k - 1 15'),
+            convert(31,
+                'a8b8',
+                'r2qkbnr/4p1pp/1p6/1Ppp1p2/p2nPNb1/P2B1PP1/R1PN3P/2BQK2R b k - 1 15'),
+            convert(32,
+                'd3e2',
+                '1r1qkbnr/4p1pp/1p6/1Ppp1p2/p2nPNb1/P2B1PP1/R1PN3P/2BQK2R w k - 2 16'),
+            convert(33,
+                'e7e5',
+                '1r1qkbnr/4p1pp/1p6/1Ppp1p2/p2nPNb1/P4PP1/R1PNB2P/2BQK2R b k - 3 16'),
+            convert(34,
+                'f4h3',
+                '1r1qkbnr/6pp/1p6/1Ppppp2/p2nPNb1/P4PP1/R1PNB2P/2BQK2R w k - 0 17'),
+            convert(35,
+                'g4h5',
+                '1r1qkbnr/6pp/1p6/1Ppppp2/p2nP1b1/P4PPN/R1PNB2P/2BQK2R b k - 1 17'),
+            convert(36,
+                'a2b2',
+                '1r1qkbnr/6pp/1p6/1Ppppp1b/p2nP3/P4PPN/R1PNB2P/2BQK2R w k - 2 18'),
+            convert(37,
+                'd4e2',
+                '1r1qkbnr/6pp/1p6/1Ppppp1b/p2nP3/P4PPN/1RPNB2P/2BQK2R b k - 3 18'),
+            convert(38,
+                'b2b4',
+                '1r1qkbnr/6pp/1p6/1Ppppp1b/p3P3/P4PPN/1RPNn2P/2BQK2R w k - 0 19'),
+            convert(39,
+                'h5f7',
+                '1r1qkbnr/6pp/1p6/1Ppppp1b/pR2P3/P4PPN/2PNn2P/2BQK2R b k - 1 19'),
+            convert(40,
+                'c1b2',
+                '1r1qkbnr/5bpp/1p6/1Ppppp2/pR2P3/P4PPN/2PNn2P/2BQK2R w k - 2 20'),
+            convert(41,
+                'f7e6',
+                '1r1qkbnr/5bpp/1p6/1Ppppp2/pR2P3/P4PPN/1BPNn2P/3QK2R b k - 3 20'),
+            convert(42,
+                'g3g4',
+                '1r1qkbnr/6pp/1p2b3/1Ppppp2/pR2P3/P4PPN/1BPNn2P/3QK2R w k - 4 21'),
+            convert(43,
+                'd8c8',
+                '1r1qkbnr/6pp/1p2b3/1Ppppp2/pR2P1P1/P4P1N/1BPNn2P/3QK2R b k - 0 21'),
+            convert(44,
+                'b2a1',
+                '1rq1kbnr/6pp/1p2b3/1Ppppp2/pR2P1P1/P4P1N/1BPNn2P/3QK2R w k - 1 22'),
+            convert(45,
+                'e8d8',
+                '1rq1kbnr/6pp/1p2b3/1Ppppp2/pR2P1P1/P4P1N/2PNn2P/B2QK2R b k - 2 22'),
+            convert(46,
+                'a1c3',
+                '1rqk1bnr/6pp/1p2b3/1Ppppp2/pR2P1P1/P4P1N/2PNn2P/B2QK2R w - - 3 23'),
+            convert(47,
+                'e2c1',
+                '1rqk1bnr/6pp/1p2b3/1Ppppp2/pR2P1P1/P1B2P1N/2PNn2P/3QK2R b - - 4 23'),
+            convert(48,
+                'h1f1',
+                '1rqk1bnr/6pp/1p2b3/1Ppppp2/pR2P1P1/P1B2P1N/2PN3P/2nQK2R w - - 5 24'),
+            convert(49,
+                'c8a6',
+                '1rqk1bnr/6pp/1p2b3/1Ppppp2/pR2P1P1/P1B2P1N/2PN3P/2nQKR2 b - - 6 24'),
+            convert(50,
+                'b4a4',
+                '1r1k1bnr/6pp/qp2b3/1Ppppp2/pR2P1P1/P1B2P1N/2PN3P/2nQKR2 w - - 7 25'),
+            convert(51,
+                'c1d3',
+                '1r1k1bnr/6pp/qp2b3/1Ppppp2/R3P1P1/P1B2P1N/2PN3P/2nQKR2 b - - 0 25'),
+            convert(52,
+                'e1e2',
+                '1r1k1bnr/6pp/qp2b3/1Ppppp2/R3P1P1/P1Bn1P1N/2PN3P/3QKR2 w - - 1 26'),
+            convert(53,
+                'd8c8',
+                '1r1k1bnr/6pp/qp2b3/1Ppppp2/R3P1P1/P1Bn1P1N/2PNK2P/3Q1R2 b - - 2 26'),
+            convert(54,
+                'e4d5',
+                '1rk2bnr/6pp/qp2b3/1Ppppp2/R3P1P1/P1Bn1P1N/2PNK2P/3Q1R2 w - - 3 27'),
+            convert(55,
+                'g8h6',
+                '1rk2bnr/6pp/qp2b3/1PpPpp2/R5P1/P1Bn1P1N/2PNK2P/3Q1R2 b - - 0 27'),
+            convert(56,
+                'c3a5',
+                '1rk2b1r/6pp/qp2b2n/1PpPpp2/R5P1/P1Bn1P1N/2PNK2P/3Q1R2 w - - 1 28'),
+            convert(57,
+                'a6b7',
+                '1rk2b1r/6pp/qp2b2n/BPpPpp2/R5P1/P2n1P1N/2PNK2P/3Q1R2 b - - 2 28'),
+            convert(58,
+                'h3g5',
+                '1rk2b1r/1q4pp/1p2b2n/BPpPpp2/R5P1/P2n1P1N/2PNK2P/3Q1R2 w - - 3 29'),
+            convert(59,
+                'd3b4',
+                '1rk2b1r/1q4pp/1p2b2n/BPpPppN1/R5P1/P2n1P2/2PNK2P/3Q1R2 b - - 4 29'),
+            convert(60,
+                'd1a1',
+                '1rk2b1r/1q4pp/1p2b2n/BPpPppN1/Rn4P1/P4P2/2PNK2P/3Q1R2 w - - 5 30'),
+            convert(61,
+                'c8d7',
+                '1rk2b1r/1q4pp/1p2b2n/BPpPppN1/Rn4P1/P4P2/2PNK2P/Q4R2 b - - 6 30'),
+            convert(62,
+                'e2e3',
+                '1r3b1r/1q1k2pp/1p2b2n/BPpPppN1/Rn4P1/P4P2/2PNK2P/Q4R2 w - - 7 31'),
+            convert(63,
+                'd7d8',
+                '1r3b1r/1q1k2pp/1p2b2n/BPpPppN1/Rn4P1/P3KP2/2PN3P/Q4R2 b - - 8 31'),
+            convert(64,
+                'f1d1',
+                '1r1k1b1r/1q4pp/1p2b2n/BPpPppN1/Rn4P1/P3KP2/2PN3P/Q4R2 w - - 9 32'),
+            convert(65,
+                'h6g4',
+                '1r1k1b1r/1q4pp/1p2b2n/BPpPppN1/Rn4P1/P3KP2/2PN3P/Q2R4 b - - 10 32'),
+            convert(66,
+                'e3e2',
+                '1r1k1b1r/1q4pp/1p2b3/BPpPppN1/Rn4n1/P3KP2/2PN3P/Q2R4 w - - 0 33'),
+            convert(67,
+                'b8c8',
+                '1r1k1b1r/1q4pp/1p2b3/BPpPppN1/Rn4n1/P4P2/2PNK2P/Q2R4 b - - 1 33'),
+            convert(68,
+                'a5b6',
+                '2rk1b1r/1q4pp/1p2b3/BPpPppN1/Rn4n1/P4P2/2PNK2P/Q2R4 w - - 2 34'),
+            convert(69,
+                'd8e7',
+                '2rk1b1r/1q4pp/1B2b3/1PpPppN1/Rn4n1/P4P2/2PNK2P/Q2R4 b - - 0 34'),
+            convert(70,
+                'a1c1',
+                '2r2b1r/1q2k1pp/1B2b3/1PpPppN1/Rn4n1/P4P2/2PNK2P/Q2R4 w - - 1 35'),
+            convert(71,
+                'c8e8',
+                '2r2b1r/1q2k1pp/1B2b3/1PpPppN1/Rn4n1/P4P2/2PNK2P/2QR4 b - - 2 35'),
+            convert(72,
+                'g5e4',
+                '4rb1r/1q2k1pp/1B2b3/1PpPppN1/Rn4n1/P4P2/2PNK2P/2QR4 w - - 3 36'),
+            convert(73,
+                'g7g5',
+                '4rb1r/1q2k1pp/1B2b3/1PpPpp2/Rn2N1n1/P4P2/2PNK2P/2QR4 b - - 4 36'),
+            convert(74,
+                'f3g4',
+                '4rb1r/1q2k2p/1B2b3/1PpPppp1/Rn2N1n1/P4P2/2PNK2P/2QR4 w - - 0 37'),
+            convert(75, 'e8c8', '4rb1r/1q2k2p/1B2b3/1PpPppp1/Rn2N1P1/P7/2PNK2P/2QR4 b - - 0 37'),
+            (76,
+                'd5e6',
+                '2r2b1r/1q2k2p/1B2b3/1PpPppp1/Rn2N1P1/P7/2PNK2P/2QR4 w - - 1 38'),
+            convert(77,
+                'e7e6',
+                '2r2b1r/1q2k2p/1B2P3/1Pp1ppp1/Rn2N1P1/P7/2PNK2P/2QR4 b - - 0 38'),
+            convert(78, 'h2h3', '2r2b1r/1q5p/1B2k3/1Pp1ppp1/Rn2N1P1/P7/2PNK2P/2QR4 w - - 0 39'),
+            convert(79, 'b7a8', '2r2b1r/1q5p/1B2k3/1Pp1ppp1/Rn2N1P1/P6P/2PNK3/2QR4 b - - 0 39'),
+            convert(80, 'g4f5', 'q1r2b1r/7p/1B2k3/1Pp1ppp1/Rn2N1P1/P6P/2PNK3/2QR4 w - - 1 40'),
+            convert(81, '', 'q1r2b1r/7p/1B2k3/1Pp1pPp1/Rn2N3/P6P/2PNK3/2QR4 b - - 0 40'),
+            convert(82, 'e6f5', 'q1r2b1r/7p/1B2k3/1Pp1pPp1/Rn2N3/P6P/2PNK3/2QR4 b - - 0 40'),
+            convert(83, 'd2f3', 'q1r2b1r/7p/1B6/1Pp1pkp1/Rn2N3/P6P/2PNK3/2QR4 w - - 0 41'),
+            convert(84, 'a8e4', 'q1r2b1r/7p/1B6/1Pp1pkp1/Rn2N3/P4N1P/2P1K3/2QR4 b - - 1 41'),
+            convert(85, 'e2f1', '2r2b1r/7p/1B6/1Pp1pkp1/Rn2q3/P4N1P/2P1K3/2QR4 w - - 0 42'),
+            convert(86, 'c8c6', '2r2b1r/7p/1B6/1Pp1pkp1/Rn2q3/P4N1P/2P5/2QR1K2 b - - 1 42'),
+            convert(87, 'd1d3', '5b1r/7p/1Br5/1Pp1pkp1/Rn2q3/P4N1P/2P5/2QR1K2 w - - 2 43'),
+            convert(88, 'e4h4', '5b1r/7p/1Br5/1Pp1pkp1/Rn2q3/P2R1N1P/2P5/2Q2K2 b - - 3 43'),
+            convert(89, 'a4a8', '5b1r/7p/1Br5/1Pp1pkp1/Rn5q/P2R1N1P/2P5/2Q2K2 w - - 4 44'),
+            convert(90, 'c6g6', 'R4b1r/7p/1Br5/1Pp1pkp1/1n5q/P2R1N1P/2P5/2Q2K2 b - - 5 44'),
+            convert(91, 'b6a5', 'R4b1r/7p/1B4r1/1Pp1pkp1/1n5q/P2R1N1P/2P5/2Q2K2 w - - 6 45'),
+            convert(92, 'g6e6', 'R4b1r/7p/6r1/BPp1pkp1/1n5q/P2R1N1P/2P5/2Q2K2 b - - 7 45'),
+            convert(93, 'a3a4', 'R4b1r/7p/4r3/BPp1pkp1/1n5q/P2R1N1P/2P5/2Q2K2 w - - 8 46'),
+            convert(94, 'h4h5', 'R4b1r/7p/4r3/BPp1pkp1/Pn5q/3R1N1P/2P5/2Q2K2 b - - 0 46'),
+            convert(95, 'a5b4', 'R4b1r/7p/4r3/BPp1pkpq/Pn6/3R1N1P/2P5/2Q2K2 w - - 1 47'),
+            convert(96, 'f5f6', 'R4b1r/7p/4r3/1Pp1pkpq/PB6/3R1N1P/2P5/2Q2K2 b - - 0 47'),
+            convert(97, 'c1b2', 'R4b1r/7p/4rk2/1Pp1p1pq/PB6/3R1N1P/2P5/2Q2K2 w - - 1 48'),
+            convert(98, 'f6f5', 'R4b1r/7p/4rk2/1Pp1p1pq/PB6/3R1N1P/1QP5/5K2 b - - 2 48'),
+            convert(99, 'a8a7', 'R4b1r/7p/4r3/1Pp1pkpq/PB6/3R1N1P/1QP5/5K2 w - - 3 49'),
+            convert(100, 'e6g6', '5b1r/R6p/4r3/1Pp1pkpq/PB6/3R1N1P/1QP5/5K2 b - - 4 49'),
+            convert(101, 'b2e5', '5b1r/R6p/6r1/1Pp1pkpq/PB6/3R1N1P/1QP5/5K2 w - - 5 50')
+        ];
+
+        createBoardPlay();
+    </script>
+</body>
+
+</html>

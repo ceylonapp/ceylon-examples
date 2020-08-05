@@ -1,11 +1,9 @@
 import chess
 import chess.svg
 
-from piece_player import PlayerCoordinatorAgent
-
 
 class ChessBoardAgent:
-    __dependents__ = [PlayerCoordinatorAgent]
+    __dependents__ = []
 
     def __init__(self, config=None):
         self.board = chess.Board()
